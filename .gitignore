@@ -1,0 +1,6 @@
+/.build/
+/Neo4j-Error-*
+
+/cover_db
+/Stuff
+*.bbprojectd

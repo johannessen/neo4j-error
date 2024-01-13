@@ -141,7 +141,7 @@ __END__
  # Producer:
  $server_error = Neo4j::Error->new( Server => {
    code      => 'Neo.ClientError.Statement.SyntaxError',
-   message   => 'Expected Cypher query',
+   message   => 'Parsing the Cypher query failed',
  });
  $http_error   = Neo4j::Error->new( Network => {
    code      => '401',
@@ -185,9 +185,11 @@ tries to auto-generate something suitable.
 
  $string = $error->category;
 
-The Neo4j "category" of this error, parsed from the Neo4j
-status code. One of: C<Cluster>, C<Database>, C<Fabric>,
+The Neo4j "subtype" of this error, parsed from the Neo4j
+status code. Formerly known as "category".
+One of: C<Cluster>, C<Database>, C<Fabric>,
 C<General>, C<LegacyIndex>, C<Procedure>, C<Request>,
+C<Routing>,
 C<Schema>, C<Security>, C<Statement>, C<Transaction>.
 
 For errors that don't originate on the Neo4j server,
@@ -197,8 +199,9 @@ this method returns the empty string.
 
  $string = $error->classification;
 
-The Neo4j "classification" of this error, parsed from the Neo4j
-status code. One of: C<ClientError>, C<ClientNotification>,
+The Neo4j "type" of this error, parsed from the Neo4j
+status code. Formerly known as "classification".
+One of: C<ClientError>, C<ClientNotification>,
 C<TransientError>, C<DatabaseError>.
 
 For errors that don't originate on the Neo4j server,
@@ -297,8 +300,8 @@ See L</"ERROR SOURCES"> below.
 
  $string = $error->title;
 
-The Neo4j "title" of this error, parsed from the Neo4j
-status code.
+The Neo4j "name" of this error, parsed from the Neo4j
+status code. Formerly known as "title".
 
 For errors that don't originate on the Neo4j server,
 this method returns the empty string.
@@ -322,8 +325,7 @@ L<Neo4j::Error> implements the following constructor methods.
  $e = Neo4j::Error->new( $source => \%error_info );
  
  # Hashref optional for pure string error messages
- $e = Neo4j::Error->new( Internal =>
-          { as_string => $error_string });
+ $e = Neo4j::Error->new( Internal => {as_string => $error_string} );
  $e = Neo4j::Error->new( Internal => "$error_string" );
 
 Construct a new L<Neo4j::Error> object.
@@ -382,7 +384,7 @@ might legitimately be reported as coming from any of these sources:
 
 =item * B<Server:> Neo4j status C<Neo.ClientError.Security.Unauthorized>
 
-=item * B<Network:> HTTP status C<401> or Bolt libneo4j-client C<-15>
+=item * B<Network:> HTTP status C<401> or Bolt libneo4j-omni C<-15>
 
 =item * B<Internal:> Default fallback because the true cause is unclear
 
@@ -408,7 +410,7 @@ L<C<category()>|/"category">, and L<C<title()>|/"title">.
 Represents a network protocol or network library having signalled
 an error condition. The error code is either defined by the
 protocol (as is the case for HTTP) or by the networking library
-(for example libneo4j-client, used by L<Neo4j::Bolt>). The actual
+(for example libneo4j-omni, used by L<Neo4j::Bolt>). The actual
 cause of the error may or may not be network-related.
 
 =head2 Internal

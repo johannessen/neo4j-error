@@ -47,7 +47,7 @@ sub _parse_code {
 	my ($self, $part) = @_;
 	
 	return '' unless defined $self->{code};
-	my @parts = $self->{code} =~ m/^Neo\.([^\.]+)\.([^\.]+)\.(.+)$/i;
+	my @parts = $self->code =~ m/^Neo\.([^\.]+)\.([^\.]+)\.(.+)$/i;
 	return '' unless @parts;
 	
 	$self->{classification} = $parts[0];

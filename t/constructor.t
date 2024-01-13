@@ -114,7 +114,8 @@ subtest 'stack trace' => sub {
 	isa_ok $e->trace(), 'Devel::StackTrace', 'trace';
 	ok $v = $e->trace->frame(0), 'trace frame';
 	is $v->line(), __LINE__ - 3, 'trace line';
-	is $v->filename(), __FILE__, 'trace file';
+	my $file = __FILE__; $file =~ tr[\\/][.];
+	like $v->filename(), qr{\b$file\b}, 'trace file';
 	is $v->subroutine(), 'Neo4j::Error::new', 'trace sub';
 	SKIP: { skip 'Devel::StackTrace < 2.03', 1 unless $can_message;
 		is $e->trace->message(), undef, 'trace no message';
@@ -123,7 +124,7 @@ subtest 'stack trace' => sub {
 	$v = { skip_frames => -1 };
 	ok $e = Neo4j::Error->new(Internal => {trace => $v}), 'new config 1';
 	ok $v = $e->trace->frame(0), 'trace up frame';
-	like $v->filename(), qr{\bNeo4j/Error\.pm$}, 'trace up file';
+	like $v->filename(), qr{\bNeo4j.Error\.pm$}, 'trace up file';
 	is $v->subroutine(), 'Devel::StackTrace::new', 'trace up sub';
 	
 	$v = { message => 'foo' };

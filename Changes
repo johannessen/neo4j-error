@@ -1,5 +1,9 @@
 Revision history for Neo4j::Error
 
+0.0150  2024-01-13
+
+ - Fix test failures on Win32.
+
 0.01  2023-01-27
 
  - initial release
